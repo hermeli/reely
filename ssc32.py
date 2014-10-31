@@ -174,18 +174,27 @@ class SSC32(object):
         if self.autocommit is not None:
             self.commit(self.autocommit)
 
+    def showversion(self):
+		cmd = "VER\n"
+		print '>',
+		print cmd
+		self.ser.write(cmd)
+		r = self.ser.readline()
+		print "<",
+		print r
+                
     def commit(self, time=None):
         """
         Commit servo states to comtroller
 
         `time` — operation time ([#<n>P<pos>]T<time>)
         """
-        print "commit function"
         cmd = ''.join([self._servos[i]._get_cmd_string()
                        for i in xrange(len(self._servos))])
         if time is not None and cmd != '':
             cmd += 'T{0}'.format(time)
         cmd += '\n'
+        print '>',
         print cmd
         self.ser.write(cmd)
 
@@ -195,7 +204,10 @@ class SSC32(object):
         """
         self.ser.flushInput()
         self.ser.write('Q\n')
+        print "> Q\n",
         r = self.ser.read(1)
+        print "<",
+        print r
         return r == '.'
 
     def load_config(self, config):
